@@ -6,7 +6,7 @@ const {createRoom, joinRoom, sendVote, resetRoom, handleSocketDisconnection, get
 const { all } = require('express/lib/application');
 
 var app = express()
-
+app.use(cors({ origin: "https://planningpoker-c.herokuapp.com", credentials: true }))
 var server = app.listen(5000, ()=>{console.log("server started")});
 
 const io = socket(server, {
