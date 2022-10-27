@@ -17,7 +17,7 @@ var server = app.listen(process.env.PORT || 5000, ()=>{console.log("server start
 
 const io = socket(server, {
     cors: {
-        origin: "https://planningpoker-c.herokuapp.com/",
+        origin: "https://planningpoker-c.herokuapp.com",
         methods: ["GET", "POST"],
         credentials:true
       }
