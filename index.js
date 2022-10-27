@@ -11,7 +11,7 @@ var server = app.listen(5000, ()=>{console.log("server started")});
 
 const io = socket(server, {
     cors: {
-        origin: "*",
+        origin: "https://planningpoker-c.herokuapp.com",
       }
 });
 io.on("connection", (socket)=>{
