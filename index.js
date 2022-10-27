@@ -13,7 +13,7 @@ app.use(function (req, res, next) {
     next();
     }
 );
-var server = app.listen(5000, ()=>{console.log("server started")});
+var server = app.listen(process.env.PORT || 5000, ()=>{console.log("server started")});
 
 const io = socket(server, {
     cors: {
