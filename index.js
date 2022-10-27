@@ -6,12 +6,18 @@ const {createRoom, joinRoom, sendVote, resetRoom, handleSocketDisconnection, get
 const { all } = require('express/lib/application');
 
 var app = express()
-app.use(cors({ origin: "*", credentials: true }))
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', "https://planningpoker-c.herokuapp.com/);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    next();
+    }
+);
 var server = app.listen(5000, ()=>{console.log("server started")});
 
 const io = socket(server, {
     cors: {
-        origin: "https://planningpoker-c.herokuapp.com",
+        origin: "https://planningpoker-c.herokuapp.com/",
         methods: ["GET", "POST"],
         credentials:true
       }
