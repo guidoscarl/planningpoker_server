@@ -2,8 +2,9 @@ const express = require('express');
 const socket = require('socket.io');
 const colors = require('colors');
 const cors = require('cors');
-const {createRoom, joinRoom, sendVote, resetRoom} = require("./models/Rooms");
+const {createRoom, joinRoom, sendVote, resetRoom, handleSocketDisconnection, getSocketRoom} = require("./models/Rooms");
 const { all } = require('express/lib/application');
+
 var app = express()
 
 var server = app.listen(5000, ()=>{console.log("server started")});
@@ -16,29 +17,33 @@ const io = socket(server, {
       }
 });
 io.on("connection", (socket)=>{
-    console.log("connected "+socket.id)
 
-    socket.on("createRoom", (username) => {
-
-        console.log("created room for "+ username)
-        var roomId = createRoom(username, socket.id);
+    socket.on("createRoom", (username, votingSystem) => {
+        var roomId = createRoom(username, votingSystem, socket.id);
+        console.log(votingSystem)
         socket.join(roomId)
-        socket.emit('roomCreated', roomId)
-        
+        socket.emit('roomCreated', roomId)       
     }),
+
     socket.on("joinRoom", (data) => {
-        console.log("joined "+ data.userName + " " + data.roomId)
-        socket.join(data.roomId)
-        var allUsers = joinRoom(data.userName, data.roomId, socket.id)
-        io.to(data.roomId).emit('userJoined', (allUsers))
-        console.log("broadcast to "+ data.roomId)
-        console.log(allUsers)
+        var result = joinRoom(data.userName, data.roomId, socket.id)
+        if (result === "RoomNotExist") {
+            io.to(socket.id).emit("RoomNotExist")
+        }
+        else if (result === "RoomFull"){
+            io.to(socket.id).emit("RoomFull")
+        }
+        else if (result === "UserNameAlreadyExist"){
+            io.to(socket.id).emit("UserNameAlreadyExist")
+        }
+        else {
+            socket.join(data.roomId)
+            io.to(data.roomId).emit('userJoined', (result))
+        }
     });
    
     socket.on("sendVote", (data) => {
-        console.log(data)
         var allUsers = sendVote(data.userName, data.roomId, data.vote)
-        console.log(allUsers)
         io.to(data.roomId).emit("sendedVote", allUsers)
     })
 
@@ -51,7 +56,9 @@ io.on("connection", (socket)=>{
         io.to(roomId).emit("newVoteRequested", allUsers)
     })
 
-    socket.on("disconnect", (data) => {
-        console.log(data.roomName)
+    socket.on("disconnect", (data) => {       
+        roomId = getSocketRoom(socket.id)
+        allUsers = handleSocketDisconnection(socket.id)
+        io.to(roomId).emit("userDisconnected", allUsers)
     })
 })
