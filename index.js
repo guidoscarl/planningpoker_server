@@ -7,7 +7,7 @@ const { all } = require('express/lib/application');
 
 var app = express()
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', ["https://planningpoker-c.herokuapp.com/", "http://planningpoker-c.herokuapp.com"]);
+    res.setHeader('Access-Control-Allow-Origin', ["https://planningpoker.onrender.com", "http://planningpoker.onrender.com"]);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     next();
@@ -17,7 +17,7 @@ var server = app.listen(process.env.PORT || 5000, () => { console.log("server st
 
 const io = socket(server, {
     cors: {
-        origin: ["https://planningpoker-c.herokuapp.com", "http://planningpoker-c.herokuapp.com"],
+        origin: ["https://planningpoker.onrender.com", "http://planningpoker.onrender.com"],
         methods: ["GET", "POST"],
         credentials: true
     }
