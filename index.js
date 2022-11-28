@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
     }),
 
     socket.on("joinRoom", (data) => {
-        var result = joinRoom(data.userName, data.roomId, socket.id)
+        var result = joinRoom(data.userName, data.roomId, socket.id, data.isVisitor)
         if (result === "RoomNotExist") {
             io.to(socket.id).emit("RoomNotExist")
         }

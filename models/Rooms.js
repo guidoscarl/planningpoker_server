@@ -15,13 +15,13 @@ const createRoom = (userName, votingSystem, socketId) => {
     return createdRoomId;
 }
 
-const joinRoom = (userName, roomId, socketId) => {
+const joinRoom = (userName, roomId, socketId, isVisitor) => {
     
     if(typeof rooms[roomId] === "undefined"){
         return "RoomNotExist"
     }
 
-    if(rooms[roomId].length == 10){
+    if(!isVisitor && rooms[roomId].length == 12){
         return "RoomFull"
     }
 
@@ -30,7 +30,7 @@ const joinRoom = (userName, roomId, socketId) => {
         return "UserNameAlreadyExist"
     }
 
-    rooms[roomId] = [...rooms[roomId], {userName:userName, socketId:socketId, vote:-1}]
+    rooms[roomId] = [...rooms[roomId], {userName:userName, socketId:socketId, vote:-1, isVisitor: isVisitor}]
 
 
     socketToRooms[socketId] = roomId
